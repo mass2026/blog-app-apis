@@ -4,18 +4,19 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.codewithsuraj.blogg.entities.Category;
 import com.codewithsuraj.blogg.payloads.CatogeryDto;
 import com.codewithsuraj.blogg.repositories.CatagoryRepo;
 
+@Service
 public class CatagoryServiceImpl implements CatagoryService {
     
     @Autowired
     private CatagoryRepo catagoryRepo;
 
-    @Autowired
-    private CatogeryDto catagoryDto;
+    
 
     @Autowired
     private ModelMapper modelMapper;
@@ -42,20 +43,21 @@ public class CatagoryServiceImpl implements CatagoryService {
 
     @Override
     public void deleteCatogery(Integer catogeryId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteCatogery'");
+        Category cat = this.catagoryRepo.findById(catogeryId).orElseThrow(()-> new RuntimeException("Catogery not found"));
+        this.catagoryRepo.delete(cat);
     }
 
     @Override
     public CatogeryDto getCatogeryById(Integer catogeryId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCatogeryById'");
+        Category cat = this.catagoryRepo.findById(catogeryId).orElseThrow(()-> new RuntimeException("Catogery not found"));
+        return this.modelMapper.map(cat, CatogeryDto.class);
     }
 
     @Override
     public List<CatogeryDto> getAllCatogery() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllCatogery'");
+        List<Category> cats = this.catagoryRepo.findAll();
+        List<CatogeryDto> catogeryDtos = cats.stream().map(cat -> this.modelMapper.map(cat, CatogeryDto.class)).toList();
+        return catogeryDtos;
     }
 
 }
